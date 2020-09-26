@@ -19,19 +19,22 @@ def all():
     return render_template('donations.jinja2', donations=donations)
 
 
-@app.route('/add', methods=['GET', 'POST'])
+@app.route('/donation-creation', methods=['GET', 'POST'])
 def add():
     if request.method == 'POST':
-        # add the donation
-        input_donor = Donor.select().where(
-            Donor.name == request.form['name']).get()
-        donation = Donation(
-            donor=input_donor.id, value=request.form['amount'])
-        donation.save()
+        try:
+            input_donor = Donor.select().where(
+                Donor.name == request.form['name']).get()
+            donation = Donation(
+                donor=input_donor.id, value=request.form['amount'])
+            donation.save()
+        except Donor.DoesNotExist:
+            # No Donor matches request name
+            return render_template('donation-creation.jinja2', error='Donor not found, please check spelling')
 
         return redirect(url_for('all'))
 
-    return render_template('add.jinja2')
+    return render_template('donation-creation.jinja2')
 
 
 if __name__ == "__main__":
