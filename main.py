@@ -25,9 +25,7 @@ def add():
         try:
             input_donor = Donor.select().where(
                 Donor.name == request.form['name']).get()
-            donation = Donation(
-                donor=input_donor.id, value=request.form['amount'])
-            donation.save()
+            Donation(donor=input_donor.id, value=request.form['amount']).save()
         except Donor.DoesNotExist:
             # No Donor matches request name
             return render_template('donation-creation.jinja2', error='Donor not found, please check spelling')
